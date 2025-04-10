@@ -49,7 +49,7 @@ class ClassicGeneralDialogWidget extends StatelessWidget {
               TextButton(
                 onPressed: onNegativeClick!,
                 style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(
+                  overlayColor: WidgetStatePropertyAll(
                     Theme.of(context).splashColor,
                   ),
                 ),
@@ -62,7 +62,7 @@ class ClassicGeneralDialogWidget extends StatelessWidget {
               TextButton(
                 onPressed: onPositiveClick,
                 style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(
+                  overlayColor: WidgetStatePropertyAll(
                     Theme.of(context).splashColor,
                   ),
                 ),
@@ -137,66 +137,49 @@ class ClassicListDialogWidgetState<T> extends State<ClassicListDialogWidget> {
     Widget contentWidget = ListView.builder(
       shrinkWrap: true,
       itemBuilder: (context, index) {
-        if (widget.listItem == null) {
-          switch (widget.listType) {
-            case ListType.single:
-              return ListTile(
-                title: Text(
-                  widget.dataList[index].toString(),
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+        return widget.listItem ??
+            switch (widget.listType) {
+              ListType.single => ListTile(
+                  title: Text(
+                    widget.dataList[index].toString(),
+                    style: Theme.of(context).dialogTheme.contentTextStyle,
+                  ),
+                  onTap: widget.onListItemClick ??
+                      () {
+                        Navigator.of(context).pop(index);
+                      },
                 ),
-                onTap: widget.onListItemClick ??
-                    () {
-                      Navigator.of(context).pop(index);
-                    },
-              );
-            case ListType.singleSelect:
-              return RadioListTile<int>(
-                controlAffinity: widget.controlAffinity,
-                title: Text(
-                  widget.dataList[index].toString(),
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+              ListType.singleSelect => RadioListTile<int>(
+                  controlAffinity: widget.controlAffinity,
+                  title: Text(
+                    widget.dataList[index].toString(),
+                    style: Theme.of(context).dialogTheme.contentTextStyle,
+                  ),
+                  activeColor: widget.activeColor ?? Theme.of(context).primaryColor,
+                  value: index,
+                  groupValue: selectedIndex,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedIndex = value!;
+                    });
+                  },
                 ),
-                activeColor: widget.activeColor ?? Theme.of(context).primaryColor,
-                value: index,
-                groupValue: selectedIndex,
-                onChanged: (value) {
-                  setState(() {
-                    selectedIndex = value!;
-                  });
-                },
-              );
-            case ListType.multiSelect:
-              return CheckboxListTile(
-                controlAffinity: widget.controlAffinity,
-                selected: valueList[index],
-                value: valueList[index],
-                title: Text(
-                  widget.dataList[index].toString(),
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
+              ListType.multiSelect => CheckboxListTile(
+                  controlAffinity: widget.controlAffinity,
+                  selected: valueList[index],
+                  value: valueList[index],
+                  title: Text(
+                    widget.dataList[index].toString(),
+                    style: Theme.of(context).dialogTheme.contentTextStyle,
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      valueList[index] = value!;
+                    });
+                  },
+                  activeColor: widget.activeColor ?? Theme.of(context).primaryColor,
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    valueList[index] = value!;
-                  });
-                },
-                activeColor: widget.activeColor ?? Theme.of(context).primaryColor,
-              );
-            default:
-              return ListTile(
-                title: Text(
-                  widget.dataList[index].toString(),
-                  style: Theme.of(context).dialogTheme.contentTextStyle,
-                ),
-                onTap: widget.onListItemClick ??
-                    () {
-                      Navigator.of(context).pop(index);
-                    },
-              );
-          }
-        } else {
-          return widget.listItem!;
-        }
+            };
       },
       itemCount: widget.dataList.length,
     );

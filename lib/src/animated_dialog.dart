@@ -51,7 +51,7 @@ Future<T?> showAnimatedDialog<T>({
       return SafeArea(
         top: false,
         child: Builder(builder: (BuildContext context) {
-          return theme != null ? Theme(data: theme, child: pageChild) : pageChild;
+          return Theme(data: theme, child: pageChild);
         }),
       );
     },
@@ -256,8 +256,6 @@ Future<T?> showAnimatedDialog<T>({
           );
         case DialogTransitionType.none:
           return child;
-        default:
-          return FadeTransition(opacity: animation, child: child);
       }
     },
   );
@@ -298,7 +296,7 @@ class CustomDialogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
     final ThemeData theme = Theme.of(context);
-    final DialogTheme dialogTheme = DialogTheme.of(context);
+    final dialogTheme = DialogTheme.of(context);
     final List<Widget> children = <Widget>[];
     String? label = semanticLabel;
 
@@ -412,12 +410,12 @@ class CustomDialog extends StatelessWidget {
   final Widget? child;
 
   static const RoundedRectangleBorder _defaultDialogShape =
-  RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(2.0)));
+      RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(2.0)));
   static const double _defaultElevation = 24.0;
 
   @override
   Widget build(BuildContext context) {
-    final DialogTheme dialogTheme = DialogTheme.of(context);
+    final dialogTheme = DialogTheme.of(context);
     return AnimatedPadding(
       padding: MediaQuery.of(context).viewInsets + const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
       duration: insetAnimationDuration,
